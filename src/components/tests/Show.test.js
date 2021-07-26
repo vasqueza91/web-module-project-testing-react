@@ -6,18 +6,36 @@ import Show from './../Show';
 
 const testShow = {
     //add in approprate test data structure here.
+    name: "Stranger Things",
+    summary: "One Summer Can Change Everything",
+    seasons: [
+        {id:0, name: "Season 1", episode: []},
+        {id:1, name: "Season 2", episode: []},
+        {id:2, name: "Season 3", episode: []},
+    ] 
+
 }
 
 test('renders testShow and no selected Season without errors', ()=>{
+    render(<Show show={testShow} selectSeason={"none"} />);
 });
 
 test('renders Loading component when prop show is null', () => {
+    render(<Show show={null} />);
+    const loading = screen.queryByText(/Fetching data.../i);
+    expect(loading).toHaveTextContent(/Fetching data.../i);
 });
 
 test('renders same number of options seasons are passed in', ()=>{
+    render(<Show show-{testShow} selectedSeason={"none"} />);
+    const options = screen.getAllByTestId('season-option')
+    expect(options).toHaveLength(3);
 });
 
 test('handleSelect is called when an season is selected', () => {
+    render(<Show show={testShow} selectedSeason={testShow.seasons[0]} />);
+    userEvent.selectOptions(screen.getAllByTestId('select'), ['0'])
+    expect(screen.getByRole('option', {name: 'Season 1'}).selected).toBe(true)
 });
 
 test('component renders when no seasons are selected and when rerenders with a season passed in', () => {
